@@ -16,3 +16,9 @@
 [submodule "Vendor/CQMFloatingControl"]
 	path = Vendor/CQMFloatingControl
 	url = https://github.com/cocopon/CQMFloatingController.git
+[submodule "Vendor/SDWebImage"]
+	path = Vendor/SDWebImage
+	url = https://github.com/rs/SDWebImage.git
+[submodule "Vendor/JSONKit"]
+	path = Vendor/JSONKit
+	url = https://github.com/johnezang/JSONKit.git
