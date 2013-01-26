@@ -135,13 +135,13 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case SECTION_DEVELOPER:
-            break;
+        break;
         case SECTION_CACHE:
             [SVProgressHUD showWithStatus:@"清除中"];
             [[SDImageCache sharedImageCache] clearMemory];
             [DataManager clearAllCachedData];
             [SVProgressHUD showSuccessWithStatus:@"已清空"];
-            break;
+        break;
         case SECTION_WEIBO: {
             if (![[CLSinaWeibo shared] isLoggedIn] || [[CLSinaWeibo shared] isAuthorizeExpired]) {
                 [[CLSinaWeibo shared] logInAndPerform:^{
@@ -155,15 +155,17 @@
                         [self.tableView reloadData];
                     }];
                 }];
+                [actionSheet addCancelButtonWithTitle:@"取消"];
+                [actionSheet showInView:self.view];
             }
         }
-            break;
+        break;
         case SECTION_VERSION:
-            break;
+        break;
         case SECTION_VIEW:
-            break;
+        break;
         default:
-            break;
+        break;
     }
 }
 

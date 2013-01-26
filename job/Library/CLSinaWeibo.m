@@ -6,10 +6,10 @@
 #import "CLNotificationDefine.h"
 #import "SinaWeiboConstants.h"
 
-#define weiboAppKey             @"3397114245"
-#define weiboAppSecret          @"b7eec0bb0e4c78a69bc33630b771dd24"
-#define weiboAppRedirectURI     @"http://huohua.in"
-#define weiboSSOCallbackScheme     @"sinasso.wzujob://"
+#define weiboAppKey             @"2040737074"
+#define weiboAppSecret          @"6b60dcb3fa1f0546b3f16ae074eb6b40"
+#define weiboAppRedirectURI     @"http://job.wzu.edu.cn"
+#define weiboSSOCallbackScheme  @"sinasso.wzujob://"
 
 
 @interface CLSinaWeibo() <SinaWeiboDelegate, SinaWeiboRequestDelegate>

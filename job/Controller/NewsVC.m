@@ -39,7 +39,7 @@
         [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showActionSheet)],
         [[UIBarButtonItem alloc] initWithTitle:@"T +" style:UIBarButtonItemStyleBordered target:self action:@selector(largerFont)],
         [[UIBarButtonItem alloc] initWithTitle:@"T -" style:UIBarButtonItemStyleBordered target:self action:@selector(smallerFont)],
-        [[UIBarButtonItem alloc] initWithTitle:@"T Color" style:UIBarButtonItemStyleBordered target:self action:@selector(smallerFont)]
+        [[UIBarButtonItem alloc] initWithTitle:@"T Color" style:UIBarButtonItemStyleBordered target:self action:@selector(changeTextColor)]
         ];
     }
 }
@@ -126,6 +126,24 @@
     }];
 }
 
+#pragma mark - TextColor
+- (void)changeTextColor {
+    UITextView *textView = (UITextView *)[self.newsView viewWithTag:detailTag];
+    HHActionSheet *actionSheet = [[HHActionSheet alloc] initWithTitle:@"选择颜色"];
+    [actionSheet addButtonWithTitle:@"黑色" block:^{
+        textView.textColor = [UIColor CLDarkGrayColor];
+    }];
+    [actionSheet addButtonWithTitle:@"深蓝色" block:^{
+        textView.textColor = [UIColor CLColorWithRed:27 green:6 blue:82 alpha:1];
+    }];
+    [actionSheet addButtonWithTitle:@"深绿色" block:^{
+        textView.textColor = [UIColor CLColorWithRed:6 green:82 blue:9 alpha:1];
+    }];
+    [actionSheet addCancelButtonWithTitle:@"取消"];
+    [actionSheet showInView:self.view];
+}
+
+#pragma mark - FontSize
 - (void)largerFont {
     UITextView *textView = (UITextView *)[self.newsView viewWithTag:detailTag];
     [self resizeFontForDetailView:(textView.font.pointSize + 1)];
