@@ -1,0 +1,18 @@
+[submodule "Vendor/ABRouter"]
+	path = Vendor/ABRouter
+	url = git@github.com:lightory/ABRouter.git
+[submodule "Vendor/DCIntrospect"]
+	path = Vendor/DCIntrospect
+	url = https://github.com/domesticcatsoftware/DCIntrospect.git
+[submodule "Vendor/NYXImagesKit"]
+	path = Vendor/NYXImagesKit
+	url = git@github.com:Nyx0uf/NYXImagesKit.git
+[submodule "Vendor/SVProgressHUD"]
+	path = Vendor/SVProgressHUD
+	url = https://github.com/samvermette/SVProgressHUD.git
+[submodule "HHKit"]
+	path = HHKit
+	url = git@github.com:Huohua/HHKit.git
+[submodule "Vendor/CQMFloatingControl"]
+	path = Vendor/CQMFloatingControl
+	url = https://github.com/cocopon/CQMFloatingController.git
