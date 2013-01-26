@@ -88,7 +88,7 @@
 - (void)showCategoryVC {
     self.categoryVC.categories     = [[NSUserDefaults standardUserDefaults] objectForKey:CACHE_KEY_JobCategory];
     
-    [[CQMFloatingController sharedFloatingController] presentViewController:self.categoryVC animated:YES completion:^{}];
+    [[CQMFloatingController sharedFloatingController] showInView:self.tabBarController.view withContentViewController:self.categoryVC animated:YES];
 }
 
 - (void)categoryVC:(CategoryVC *)vc didSelectCategory:(NSMutableDictionary *)category {

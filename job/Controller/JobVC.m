@@ -14,6 +14,7 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import <MapKit/MapKit.h>
 #import "JSONKit.h"
+#import "StringStripper.h"
 
 @interface JobVC () <MFMailComposeViewControllerDelegate>
 @end
@@ -143,10 +144,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     switch (indexPath.row) {
-        case JobIndex: {
+        case JobIndex:
             [self presentDetailTextVC:@"职位名称" text:self.detail.job];
-        }
-            break;
+        break;
         case CompanyIndex:{
             HHActionSheet *actionSheet = [[HHActionSheet alloc] initWithTitle:@""];
             [actionSheet addButtonWithTitle:@"查看全文" block:^{
@@ -161,42 +161,17 @@
         break;
         case DateIndex:
         break;
-        case TelIndex: {
-            NSString *number = self.detail.tel;
-            if (number.trim.length == 0) {
-                return;
-            }
-            HHActionSheet *actionSheet = [[HHActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"电话号码:%@", number]];
-            if (number && [number length] > 0) {
-                [actionSheet addDestructiveButtonWithTitle:@"拨打电话" block:^{
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@", number]]];
-                }];
-            }
-            [actionSheet addCancelButtonWithTitle:@"取消"];
-            [actionSheet showInView:self.view];
-        }
+        case TelIndex: 
+            [self call:self.detail.tel];
         break;
-        case MobileIndex: {
-            NSString *number = self.detail.mobile;
-            if (number.trim.length == 0) {
-                return;
-            }
-            HHActionSheet *actionSheet = [[HHActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"手机号码:%@", number]];
-            if (number && [number length] > 0) {
-                [actionSheet addDestructiveButtonWithTitle:@"拨打手机" block:^{
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@", number]]];
-                }];
-            }
-            [actionSheet addCancelButtonWithTitle:@"取消"];
-            [actionSheet showInView:self.view];
-        }
+        case MobileIndex:
+            [self call:self.detail.mobile];
         break;
-        case AddressIndex:{
+        case AddressIndex:
             if (self.detail.address.trim.length == 0) {
                 return;
             }
             [self openMaps];
-            }
         break;
         case EmailIndex:
             if (self.detail.email.trim.length == 0) {
@@ -249,7 +224,7 @@
     DetailTextVC *textVC = [[DetailTextVC alloc] init];
     textVC.title = title;
     textVC.text = text;
-    [[CQMFloatingController sharedFloatingController] presentViewController:textVC animated:YES completion:^{}];
+    [[CQMFloatingController sharedFloatingController] showInView:self.tabBarController.view withContentViewController:textVC animated:YES];
 }
 
 - (void)showActionSheet {
@@ -269,11 +244,29 @@
         }
     }];
     [actionSheet addButtonWithTitle:@"分享到微信" block:^{
+        [self shareViaWechat];
     }];
     [actionSheet addButtonWithTitle:@"分享到微博" block:^{
+        [self shareViaWeibo];
     }];
     [actionSheet addCancelButtonWithTitle:@"取消"];
     [actionSheet showInView:self.view];
+}
+
+- (void)shareViaWechat {
+    [WechatHelper sendWXURLMessageTitle:[NSString stringWithFormat:@"招聘:%@", self.detail.job] description:[NSString stringWithFormat:@"单位:%@ 日期:%@", self.detail.company, self.detail.date] imageURL:nil URL:[NSString stringWithFormat:@"%@%@?Tid=%@&ID=%@", Job_WZU_EDU_CN, self.route, self.tid, self._id]];
+}
+
+- (void)shareViaWeibo {
+    if (![self checkIsLoginAndNotExpired:self.view completion:^{
+        [self shareViaWeibo];
+    }]) {
+        return;
+    }
+    [SVProgressHUD showWithStatus:@"分享中..."];
+    [[CLSinaWeibo shared] sendText:[NSString stringWithFormat:@"在#温州大学就业网#发现#%@#正在#招聘%@# >>>> %@", self.detail.company, [self.detail.job stringByReplacingOccurrencesOfString:@"招聘" withString:@""], [NSString stringWithFormat:@"%@%@?Tid=%@&ID=%@", Job_WZU_EDU_CN, self.route, self.tid, self._id]] completion:^{
+        [SVProgressHUD showSuccessWithStatus:@"分享成功"];
+    }];
 }
 
 - (void)openMaps {
@@ -309,21 +302,42 @@
             [actionSheet showInView:self.view];
             return ;
         }
-        Class itemClass = [MKMapItem class];
-        if (itemClass && [itemClass respondsToSelector:@selector(openMapsWithItems:launchOptions:)]) {
-            MKMapItem *toLocation = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:to addressDictionary:nil] ];
-            toLocation.name = [NSString stringWithFormat:@"%@", self.detail.address];
-            [MKMapItem openMapsWithItems:[NSArray arrayWithObjects:toLocation, nil] launchOptions:nil];
-        } else {
-            NSMutableString *mapURL = [NSMutableString stringWithString:@"http://maps.google.com/maps?"];
-            [mapURL appendFormat:@"&daddr=%f,%f", to.latitude, to.longitude];
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[mapURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-        }
+        
+        HHActionSheet *actionSheet = [[HHActionSheet alloc] initWithTitle:@"已获取到具体位置"];
+        [actionSheet addButtonWithTitle:@"在地图中打开" block:^{
+            Class itemClass = [MKMapItem class];
+            if (itemClass && [itemClass respondsToSelector:@selector(openMapsWithItems:launchOptions:)]) {
+                MKMapItem *toLocation = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:to addressDictionary:nil] ];
+                toLocation.name = [NSString stringWithFormat:@"%@", self.detail.address];
+                [MKMapItem openMapsWithItems:[NSArray arrayWithObjects:toLocation, nil] launchOptions:nil];
+            } else {
+                NSMutableString *mapURL = [NSMutableString stringWithString:@"http://maps.google.com/maps?"];
+                [mapURL appendFormat:@"&daddr=%f,%f", to.latitude, to.longitude];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[mapURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+            }
+        }];
+        [actionSheet addCancelButtonWithTitle:@"取消"];
+        [actionSheet showInView:self.view];
     }];
 }
 
 - (void)searchTextViaBaidu:(NSString *)text {
     NSString *string = [NSString stringWithFormat:@"http://www.baidu.com/s?wd=%@", text];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+}
+
+- (void)call:(NSString *)number {
+    number = [StringStripper strippedStringFrom:number];
+    if (number.trim.length == 0) {
+        return;
+    }
+    HHActionSheet *actionSheet = [[HHActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"%@", number]];
+    if (number && [number length] > 0) {
+        [actionSheet addDestructiveButtonWithTitle:@"拨打电话" block:^{
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@", number]]];
+        }];
+    }
+    [actionSheet addCancelButtonWithTitle:@"取消"];
+    [actionSheet showInView:self.view];
 }
 @end

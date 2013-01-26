@@ -139,6 +139,8 @@
 		F7F0D97816B37FFD00E3D259 /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F0D95416B37FFD00E3D259 /* UIButton+WebCache.m */; };
 		F7F0D97916B37FFD00E3D259 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F0D95616B37FFD00E3D259 /* UIImageView+WebCache.m */; };
 		F7F0D9A116B3827B00E3D259 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F0D99E16B3827B00E3D259 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F7F0D9B316B3A22D00E3D259 /* StringStripper.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F0D9B216B3A22D00E3D259 /* StringStripper.m */; };
+		F7F0D9C416B3D33D00E3D259 /* UIViewController+User.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F0D9C316B3D33C00E3D259 /* UIViewController+User.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -370,6 +372,10 @@
 		F7F0D95616B37FFD00E3D259 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		F7F0D99D16B3827B00E3D259 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		F7F0D99E16B3827B00E3D259 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		F7F0D9B116B3A22C00E3D259 /* StringStripper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringStripper.h; sourceTree = "<group>"; };
+		F7F0D9B216B3A22D00E3D259 /* StringStripper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringStripper.m; sourceTree = "<group>"; };
+		F7F0D9C216B3D33B00E3D259 /* UIViewController+User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+User.h"; sourceTree = "<group>"; };
+		F7F0D9C316B3D33C00E3D259 /* UIViewController+User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+User.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -558,6 +564,8 @@
 				F7C4A23B16ABC8F10046A59B /* SettingVC.m */,
 				F7C4A23D16ABCBB10046A59B /* UIViewController+SettingVC.h */,
 				F7C4A23E16ABCBB10046A59B /* UIViewController+SettingVC.m */,
+				F7F0D9C216B3D33B00E3D259 /* UIViewController+User.h */,
+				F7F0D9C316B3D33C00E3D259 /* UIViewController+User.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -565,6 +573,8 @@
 		F7989956169543FC000CEB9E /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				F7F0D9B116B3A22C00E3D259 /* StringStripper.h */,
+				F7F0D9B216B3A22D00E3D259 /* StringStripper.m */,
 				F7F0D92516B37F7E00E3D259 /* WechatHelper.h */,
 				F7F0D92616B37F7E00E3D259 /* WechatHelper.m */,
 				F7989973169544D7000CEB9E /* SVPullToRefreshHelper.h */,
@@ -1114,6 +1124,8 @@
 				F7F0D97816B37FFD00E3D259 /* UIButton+WebCache.m in Sources */,
 				F7F0D97916B37FFD00E3D259 /* UIImageView+WebCache.m in Sources */,
 				F7F0D9A116B3827B00E3D259 /* JSONKit.m in Sources */,
+				F7F0D9B316B3A22D00E3D259 /* StringStripper.m in Sources */,
+				F7F0D9C416B3D33D00E3D259 /* UIViewController+User.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1195,8 +1207,8 @@
 					"\"$(SRCROOT)/Vendor/WeChat SDK\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A129731F-44D1-4B71-8E04-B5BFD47BF881";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A129731F-44D1-4B71-8E04-B5BFD47BF881";
+				PROVISIONING_PROFILE = "85F48702-811A-49E2-A618-D88467F8B6DC";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "85F48702-811A-49E2-A618-D88467F8B6DC";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1215,7 +1227,7 @@
 					"\"$(SRCROOT)/Vendor/WeChat SDK\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A129731F-44D1-4B71-8E04-B5BFD47BF881";
+				PROVISIONING_PROFILE = "85F48702-811A-49E2-A618-D88467F8B6DC";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A129731F-44D1-4B71-8E04-B5BFD47BF881";
 				WRAPPER_EXTENSION = app;
 			};

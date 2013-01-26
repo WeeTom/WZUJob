@@ -7,6 +7,9 @@
 //
 
 #import "SettingVC.h"
+#import "DataManager.h"
+#import "SDImageCache.h"
+#import "CLSinaWeibo.h"
 
 #define SECTION_WEIBO       0
 #define SECTION_CACHE       2
@@ -14,14 +17,14 @@
 #define SECTION_VERSION     4
 #define SECTION_DEVELOPER   3
 @interface SettingVC ()
-@property (strong, nonatomic) UISwitch *nightViewSwitch;
+@property (strong, nonatomic) UISwitch *showImageSwitch;
 @end
 
 @implementation SettingVC
 #pragma mark - propeties
 - (void)clearProperties {
     [super clearProperties];
-    _nightViewSwitch = nil;
+    _showImageSwitch = nil;
 }
 
 #pragma mark - hooks
@@ -84,7 +87,11 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     cell.textLabel.textAlignment = NSTextAlignmentLeft;
+    cell.textLabel.textColor = [UIColor CLDarkGrayColor];
+    cell.textLabel.font = [UIFont CLFontSize:17 bold:YES];
+    cell.accessoryView = nil;
     switch (indexPath.section) {
         case SECTION_DEVELOPER:
             cell.textLabel.text = @"Product of WeeTom";
@@ -93,16 +100,30 @@
         case SECTION_CACHE:
             cell.textLabel.text = @"清空缓存";
             break;
-        case SECTION_WEIBO:
+        case SECTION_WEIBO: {
             cell.textLabel.text = @"新浪微博";
+            HHLabel *label = [[HHLabel alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+            label.backgroundColor = [UIColor clearColor];
+            label.textColor = [UIColor CLGrayTextColor];
+            label.font = [UIFont CLFontSize:17 bold:YES];
+            if ([[CLSinaWeibo shared] isLoggedIn] && ![[CLSinaWeibo shared] isAuthorizeExpired]) {
+                label.text = [CLCache stringForKey:@"sinaWeiboNickname"];
+            } else {
+                label.text = @"未绑定";
+            }
+            [label autoResize:CGSizeMake(200, 44)];
+            label.offset = CGPointMake(300 - label.width, 22 - label.height/2);
+            cell.accessoryView = label;
+        }
             break;
         case SECTION_VERSION:
             cell.textLabel.text = [NSString stringWithFormat:@"Version %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
             break;
         case SECTION_VIEW:
-            cell.textLabel.text = @"夜间模式";
-            cell.accessoryView = self.nightViewSwitch;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.textLabel.text = @"显示图片";
+            cell.accessoryView = self.showImageSwitch;
             break;
         default:
             break;
@@ -110,22 +131,56 @@
     return cell;
 }
 
-- (UISwitch *)nightViewSwitch {
-    if (!_nightViewSwitch) {
-        _nightViewSwitch = [[UISwitch alloc] init];
-        [_nightViewSwitch addTarget:self action:@selector(switchToNightView) forControlEvents:UIControlEventTouchUpInside];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    switch (indexPath.section) {
+        case SECTION_DEVELOPER:
+            break;
+        case SECTION_CACHE:
+            [SVProgressHUD showWithStatus:@"清除中"];
+            [[SDImageCache sharedImageCache] clearMemory];
+            [DataManager clearAllCachedData];
+            [SVProgressHUD showSuccessWithStatus:@"已清空"];
+            break;
+        case SECTION_WEIBO: {
+            if (![[CLSinaWeibo shared] isLoggedIn] || [[CLSinaWeibo shared] isAuthorizeExpired]) {
+                [[CLSinaWeibo shared] logInAndPerform:^{
+                    [SVProgressHUD dismiss];
+                    [self.tableView reloadData];
+                }];
+            } else {
+                HHActionSheet *actionSheet = [[HHActionSheet alloc] initWithTitle:@""];
+                [actionSheet addDestructiveButtonWithTitle:@"解除绑定" block:^{
+                    [[CLSinaWeibo shared] logOutAndPerform:^{
+                        [self.tableView reloadData];
+                    }];
+                }];
+            }
+        }
+            break;
+        case SECTION_VERSION:
+            break;
+        case SECTION_VIEW:
+            break;
+        default:
+            break;
     }
-    return _nightViewSwitch;
 }
 
-- (void)switchToNightView {
-    if (self.nightViewSwitch.on) {
-        [CLCache setBool:YES forKey:CACHE_KEY_NightView];
-        HHLog(@"NightSwitch");
-    } else {
-        [CLCache setBool:NO forKey:CACHE_KEY_NightView];
-        HHLog(@"CancelNightSwitch");
+- (UISwitch *)showImageSwitch {
+    if (!_showImageSwitch) {
+        _showImageSwitch = [[UISwitch alloc] init];
+        [_showImageSwitch addTarget:self action:@selector(showImage) forControlEvents:UIControlEventTouchUpInside];
+        _showImageSwitch.on = [CLCache boolForKey:CACHE_KEY_ShowImage];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:CLNotificationNightViewSwitched object:nil];
+    return _showImageSwitch;
+}
+
+- (void)showImage {
+    if (self.showImageSwitch.on) {
+        [CLCache setBool:YES forKey:CACHE_KEY_ShowImage];
+    } else {
+        [CLCache setBool:NO forKey:CACHE_KEY_ShowImage];
+    }
 }
 @end

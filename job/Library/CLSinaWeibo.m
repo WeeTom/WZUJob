@@ -9,6 +9,8 @@
 #define weiboAppKey             @"3397114245"
 #define weiboAppSecret          @"b7eec0bb0e4c78a69bc33630b771dd24"
 #define weiboAppRedirectURI     @"http://huohua.in"
+#define weiboSSOCallbackScheme     @"sinasso.wzujob://"
+
 
 @interface CLSinaWeibo() <SinaWeiboDelegate, SinaWeiboRequestDelegate>
 @property (strong, nonatomic) HHBasicBlock afterLoginBlock, afterLogoutBlock, completionBlock;
@@ -20,10 +22,7 @@
 {
     static CLSinaWeibo *sinaWeibo;
     @synchronized(self) {
-        if (!sinaWeibo) {
-            NSString *weiboSSOCallbackScheme = @"wb3397114245://";
-            if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"SANDBOX"] boolValue]) weiboSSOCallbackScheme = @"wbsmall3397114245://";
-            
+        if (!sinaWeibo) {            
             sinaWeibo = [[self alloc] initWithAppKey:weiboAppKey appSecret:weiboAppSecret appRedirectURI:weiboAppRedirectURI ssoCallbackScheme:weiboSSOCallbackScheme andDelegate:nil];
             NSDictionary *sinaWeiboInfo = [[NSUserDefaults standardUserDefaults] objectForKey:@"SinaWeiboAuthData"];
             if ([sinaWeiboInfo objectForKey:@"AccessTokenKey"] && [sinaWeiboInfo objectForKey:@"ExpirationDateKey"] && [sinaWeiboInfo objectForKey:@"UserIDKey"])
@@ -67,7 +66,6 @@
     [CLCache removeStringForKey:@"userId"];
     [CLCache removeStringForKey:@"sinaWeiboNickname"];
     [CLCache removeStringForKey:@"sinaWeiboAvatar"];
-    [CLCache removeStringForKey:@"userBackground"];
     
     [self logOut];
 }
@@ -101,25 +99,11 @@
     [self requestWithURL:@"statuses/upload.json" params:params httpMethod:@"POST" delegate:self];
 }
 
-- (void)uploadWeiboFriends:(HHBasicBlock)completionBlock
-{
-    HHLog(@"uploadWeiboFriends");
-    self.completionBlock = [completionBlock copy];
-    
-    NSMutableDictionary *params = [@{
-       @"uid": [CLSinaWeibo shared].userID,
-       @"count": @"5000"
-    } mutableCopy];
-    
-    [[CLSinaWeibo shared] requestWithURL:@"friendships/friends/ids.json" params:params httpMethod:@"GET" delegate:self];
-}
-
 #pragma mark - SinaWeiboDelegate
 - (void)sinaweiboDidLogIn:(SinaWeibo *)sinaweibo
 {
     NSLog(@"sinaweiboDidLogIn userID = %@ accesstoken = %@ expirationDate = %@ refresh_token = %@", sinaweibo.userID, sinaweibo.accessToken, sinaweibo.expirationDate, sinaweibo.refreshToken);
     [self storeAuthData];
-    //self.afterLoginBlock();
     
     [SVProgressHUD showWithStatus:@"加载中..."];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.userID forKey:@"uid"];

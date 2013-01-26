@@ -9,6 +9,7 @@
 #import "CLViewController.h"
 #import "DataManager.h"
 #import "FavManager.h"
+#import "WechatHelper.h"
 
 @interface ShowVC : CLViewController
 @property (readonly, nonatomic) NSString *route;

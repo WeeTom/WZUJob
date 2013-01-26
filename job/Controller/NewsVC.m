@@ -11,8 +11,9 @@
 #import "Content.h"
 #import "SVProgressHUD.h"
 
-@interface NewsVC () <UIWebViewDelegate>
+@interface NewsVC () <UIWebViewDelegate, UIScrollViewDelegate>
 @property (strong, nonatomic) NewsView *newsView;
+@property (assign, nonatomic) BOOL shouldHideNaviBar;
 @property (strong, nonatomic) UIWebView *webView;
 @property (strong, nonatomic) NSString *detailText;
 @end
@@ -36,15 +37,16 @@
     } else {
         self.navigationItem.rightBarButtonItems = @[
         [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showActionSheet)],
-        [[UIBarButtonItem alloc] initWithTitle:@"A +" style:UIBarButtonItemStyleBordered target:self action:@selector(largerFont)],
-        [[UIBarButtonItem alloc] initWithTitle:@"A -" style:UIBarButtonItemStyleBordered target:self action:@selector(smallerFont)],
+        [[UIBarButtonItem alloc] initWithTitle:@"T +" style:UIBarButtonItemStyleBordered target:self action:@selector(largerFont)],
+        [[UIBarButtonItem alloc] initWithTitle:@"T -" style:UIBarButtonItemStyleBordered target:self action:@selector(smallerFont)],
+        [[UIBarButtonItem alloc] initWithTitle:@"T Color" style:UIBarButtonItemStyleBordered target:self action:@selector(smallerFont)]
         ];
     }
 }
 
 - (void)setupNavigationBar {
     [super setupNavigationBar];
-    [self.navigationController setTitleText:@"详情"];
+    self.navigationController.navigationBar.translucent = YES;
 }
 
 - (void)finishLoadingData:(NSString *)content {
@@ -59,6 +61,8 @@
         _newsView.scrollEnabled = YES;
         _newsView.bounces = YES;
         _newsView.alwaysBounceVertical = YES;
+        _newsView.delegate = self;
+        _newsView.clipsToBounds = NO;
     }
     return _newsView;
 }
@@ -97,11 +101,29 @@
         }
     }];
     [actionSheet addButtonWithTitle:@"分享到微信" block:^{
+        [self shareViaWechat];
     }];
     [actionSheet addButtonWithTitle:@"分享到微博" block:^{
+        [self shareViaWeibo];
     }];
     [actionSheet addCancelButtonWithTitle:@"取消"];
     [actionSheet showInView:self.view];
+}
+
+- (void)shareViaWechat {
+    [WechatHelper sendWXURLMessageTitle:[NSString stringWithFormat:@"新闻:%@", self.detail.title] description:[NSString stringWithFormat:@"日期:%@", self.detail.date] imageURL:nil URL:[NSString stringWithFormat:@"%@%@?Tid=%@&ID=%@", Job_WZU_EDU_CN, self.route, self.tid, self._id]];
+}
+
+- (void)shareViaWeibo {
+    if (![self checkIsLoginAndNotExpired:self.view completion:^{
+        [self shareViaWeibo];
+    }]) {
+        return;
+    }
+    [SVProgressHUD showWithStatus:@"分享中..."];
+    [[CLSinaWeibo shared] sendText:[NSString stringWithFormat:@"在#温州大学就业网#看到这段新闻:%@ >>>> %@", self.detail.title, [NSString stringWithFormat:@"%@%@?Tid=%@&ID=%@", Job_WZU_EDU_CN, self.route, self.tid, self._id]] completion:^{
+        [SVProgressHUD showSuccessWithStatus:@"分享成功"];
+    }];
 }
 
 - (void)largerFont {
@@ -141,5 +163,35 @@
     }];
     [actionSheet addCancelButtonWithTitle:@"取消"];
     [actionSheet showInView:self.view];
+}
+
+#pragma mark - UIScrollView Delegate
+static CGFloat beginPointY;
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    self.shouldHideNaviBar = YES;
+    beginPointY =  scrollView.contentOffset.y;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.shouldHideNaviBar) {
+        CGFloat currentPonitY = scrollView.contentOffset.y;
+        if (currentPonitY > beginPointY
+            && currentPonitY >= 0
+            && scrollView.height + scrollView.contentOffset.y <= scrollView.contentSize.height) {
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
+        } else {
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+        }
+        beginPointY = currentPonitY;
+    }
+    
+    if (scrollView.height + scrollView.contentOffset.y > scrollView.contentSize.height && !self.shouldHideNaviBar) {
+        self.shouldHideNaviBar = YES;
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    self.shouldHideNaviBar = NO;
 }
 @end

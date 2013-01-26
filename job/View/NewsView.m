@@ -14,7 +14,7 @@
 @implementation NewsView
 - (void)setupWithContent:(NSMutableDictionary *)content detail:(NSString *)detail {
     
-    CGFloat offsetY = 7;
+    CGFloat offsetY = 7 + 49;
     if (content.date) {
         HHLabel *label = (HHLabel *)[self viewWithTag:dateTag];
         if (!label) {
@@ -101,14 +101,16 @@
             textView.font = [UIFont CLFontSize:15];
             textView.textColor = [UIColor CLDarkGrayColor];
             textView.backgroundColor = [UIColor clearColor];
+            textView.clipsToBounds = NO;
         }
+        HHLog(@"%lf",textView.font.pointSize);
         textView.text = detail;
         textView.scrollEnabled = NO;
         textView.editable = NO;
-        CGFloat textHeight = [detail sizeWithFont:textView.font constrainedToSize:CGSizeMake(306, 1000000) lineBreakMode:NSLineBreakByWordWrapping].height + 16;
-        textView.frame = CGRectMake(0, offsetY, 320, textHeight);
-        offsetY += textView.height + 7*(textView.text.trim.length>0);
+        textView.frame = CGRectMake(0, offsetY, 320, 0);
         [self addSubview:textView];
+        textView.height = textView.contentSize.height;
+        offsetY += textView.height + 7*(textView.text.trim.length>0);
     }
     
     if (content.images && [[NSUserDefaults standardUserDefaults] boolForKey:CACHE_KEY_ShowImage]) {

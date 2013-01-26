@@ -25,6 +25,11 @@
     return @[@"logCurrentVisiableVC"];
 }
 
+- (NSArray *)hooksAfterViewWillAppear
+{
+    return @[];
+}
+
 - (NSArray *)hooksAfterViewDidDisappear
 {
     return @[];

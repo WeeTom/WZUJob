@@ -9,5 +9,3 @@
 #define CACHE_KEY_AllCachedData @"cachedData"
 
 #define CACHE_KEY_Favourites    @"favourites"
-
-#define CACHE_KEY_NightView     @"nightView"

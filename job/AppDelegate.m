@@ -10,6 +10,12 @@
 #import "CLRouter.h"
 #import "RootVC.h"
 #import "DCIntrospect.h"
+#import "WXApi.h"
+#import "CLSinaWeibo.h"
+
+@interface AppDelegate () <WXApiDelegate>
+
+@end
 
 @implementation AppDelegate
 
@@ -22,9 +28,18 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
+    [WXApi registerApp:@"wxf610994b39eda5ab"];
+    
     #if TARGET_IPHONE_SIMULATOR
     [[DCIntrospect sharedIntrospector] start];
     #endif
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    if ([url.scheme hasPrefix:@"sinasso"]) {
+        return [[CLSinaWeibo shared] handleOpenURL:url];
+    }
     return YES;
 }
 

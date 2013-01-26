@@ -18,6 +18,7 @@
 
 #import "WZUWebContentFetcher.h"
 #import "WZUWebContentProcessor.h"
+#import "UIViewController+User.h"
 
 @interface CLViewController : HHViewController <Routable, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) NSString *apiPath;

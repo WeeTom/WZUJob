@@ -3,7 +3,32 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "__63+[WechatHelper sendWXURLMessageTitle:description:imageURL:URL:]_block_invoke_0:WechatHelper.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "req.bText">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[ABRouter match:]:ABRouter.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[NSMutableDictionary(Content) detailText]:Content.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.title">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[JobListVC jobCategoryVC:didSelectCategory:]:JobListVC.m">
+      </ContextState>
+      <ContextState
          contextName = "+[WZUWebContentFetcher fetchNewsListContentFrom:withTid:atPage:]:WZUWebContentFetcher.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[ListVC hooksAfterViewWillAppear]:ListVC.m">
       </ContextState>
       <ContextState
          contextName = "-[FavouritesVC tableView:didSelectRowAtIndexPath:]:FavouritesVC.m">
@@ -15,20 +40,6 @@
       </ContextState>
       <ContextState
          contextName = "-[ListVC loadData]:ListVC.m">
-      </ContextState>
-      <ContextState
-         contextName = "-[ABRouter match:]:ABRouter.m">
-      </ContextState>
-      <ContextState
-         contextName = "-[JobListVC jobCategoryVC:didSelectCategory:]:JobListVC.m">
-      </ContextState>
-      <ContextState
-         contextName = "-[NSMutableDictionary(Content) detailText]:Content.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "self.title">
-            </PersistentString>
-         </PersistentStrings>
       </ContextState>
    </ContextStates>
 </VariablesViewState>

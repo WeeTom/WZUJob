@@ -11,6 +11,4 @@
 
 - (void)sendText:(NSString *)text completion:(HHBasicBlock)completionBlock;
 - (void)sendText:(NSString *)text image:(UIImage *)image completion:(HHBasicBlock)completionBlock;
-
-- (void)uploadWeiboFriends:(HHBasicBlock)completionBlock;
 @end

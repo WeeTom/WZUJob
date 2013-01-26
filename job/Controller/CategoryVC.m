@@ -75,10 +75,9 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    [[CQMFloatingController sharedFloatingController] dismissViewControllerAnimated:YES completion:^{
-        NSMutableDictionary *content = [self.categories objectAtIndex:indexPath.row];
-        [self.delegate categoryVC:self didSelectCategory:content];
-    }];
+    [[CQMFloatingController sharedFloatingController] dismissAnimated:YES];
+    NSMutableDictionary *content = [self.categories objectAtIndex:indexPath.row];
+    [self.delegate categoryVC:self didSelectCategory:content];
 }
 
 @end

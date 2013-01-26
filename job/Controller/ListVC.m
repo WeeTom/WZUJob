@@ -51,6 +51,16 @@
     return hooks;
 }
 
+- (NSArray *)hooksAfterViewWillAppear {
+    NSMutableArray *hooks = [[super hooksAfterViewWillAppear] mutableCopy];
+    [hooks addObject:@"setNaviBarTranslucent"];
+    return hooks;
+}
+
+- (void)setNaviBarTranslucent {
+    self.navigationController.navigationBar.translucent = NO;
+}
+
 - (void)setupNavigationBar {
     [super setupNavigationBar];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStyleBordered target:self action:@selector(showSettingVC)];

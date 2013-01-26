@@ -20,6 +20,32 @@
     _favourites = nil;
 }
 
+- (NSArray *)hooksAfterLoadView {
+    NSMutableArray *hooks = [[super hooksAfterLoadView] mutableCopy];
+    [hooks addObject:@"loadData"];
+    [hooks addObject:@"resetupTableView"];
+    [hooks addObject:@"addFavouriteNotification"];
+    return hooks;
+}
+
+
+- (NSArray *)hooksAfterViewWillAppear {
+    NSMutableArray *hooks = [[super hooksAfterViewWillAppear] mutableCopy];
+    [hooks addObject:@"setNaviBarTranslucent"];
+    return hooks;
+}
+
+- (NSArray *)hooksBeforeViewDidUnload {
+    NSMutableArray *hooks = [[super hooksBeforeViewDidUnload] mutableCopy];
+    [hooks addObject:@"removeFavouriteNotification"];
+    return hooks;
+}
+
+
+- (void)setNaviBarTranslucent {
+    self.navigationController.navigationBar.translucent = NO;
+}
+
 - (void)setupNavigationBar {
     [super setupNavigationBar];
     [self.navigationController setTitleText:@"我的收藏"];
@@ -30,19 +56,6 @@
     self.tableView.frame = self.view.bounds;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
-
-- (NSArray *)hooksAfterLoadView {
-    NSMutableArray *hooks = [[super hooksAfterLoadView] mutableCopy];
-    [hooks addObject:@"loadData"];
-    [hooks addObject:@"resetupTableView"];
-    [hooks addObject:@"addFavouriteNotification"];
-    return hooks;
-}
-
-- (NSArray *)hooksBeforeViewDidUnload {
-    NSMutableArray *hooks = [[super hooksBeforeViewDidUnload] mutableCopy];
-    [hooks addObject:@"removeFavouriteNotification"];
-    return hooks;}
 
 - (void)loadData {
     self.favourites = [[FavManager favs] mutableCopy];
