@@ -65,6 +65,11 @@
         [DataManager setObject:content forKey:self.fullApiPath];
     } completion:^{
         self.isLoading = NO;
+        if (!content) {
+            [SVProgressHUD showErrorWithStatus:@"网络有问题哦"];
+            return ;
+        }
+        
         [CLCache setObject:content forKey:self.fullApiPath];
         [self finishLoadingData:content];
     }];

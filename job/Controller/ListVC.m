@@ -126,11 +126,15 @@
     
     [HHThreadHelper performBlockInBackground:^{
         content = [WZUWebContentFetcher fetchListContentFrom:self.route withTid:self.tid atPage:self.currentPage];
-        [DataManager setObject:content forKey:self.fullApiPath];
     } completion:^{
         self.isLoading = NO;
-        self.currentPage++;
+        if (!content) {
+            [SVProgressHUD showErrorWithStatus:@"网络有问题哦"];
+            return ;
+        }
         
+        [DataManager setObject:content forKey:self.fullApiPath];
+        self.currentPage++;
         [self finishLoadingData:content];
     }];
 }
@@ -149,8 +153,12 @@
         content = [WZUWebContentFetcher fetchListContentFrom:self.route withTid:self.tid atPage:self.currentPage];
     } completion:^{
         self.isLoading = NO;
-        self.currentPage++;
+        if (!content) {
+            [SVProgressHUD showErrorWithStatus:@"网络有问题哦"];
+            return ;
+        }
         
+        self.currentPage++;
         [self finishLoadingMoreData:content];
     }];
 }
