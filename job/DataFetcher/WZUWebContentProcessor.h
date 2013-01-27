@@ -20,3 +20,4 @@
 + (NSMutableDictionary *)processNewsDetail:(NSString *)content;
 + (NSMutableDictionary *)processJobDetail:(NSString *)content;
 @end
+

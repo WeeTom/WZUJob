@@ -163,26 +163,6 @@
     [self.newsView setupWithContent:self.detail detail:self.detailText];
 }
 
-- (void)editView {
-    HHActionSheet *actionSheet = [[HHActionSheet alloc] initWithTitle:@""];
-    [actionSheet addButtonWithTitle:@"修改字体大小" block:^{
-        HHLabel *label = (HHLabel *)[self.newsView viewWithTag:detailTag];
-        if (label) {
-            label.font = [UIFont CLFontSize:18];
-            [self.newsView setupWithContent:self.detail detail:self.detailText];
-        }
-    }];
-    [actionSheet addButtonWithTitle:@"修改字体颜色" block:^{
-        HHLabel *label = (HHLabel *)[self.newsView viewWithTag:detailTag];
-        if (label) {
-            label.textColor = [UIColor CLRedTextColor];
-            [self.newsView setupWithContent:self.detail detail:self.detailText];
-        }
-    }];
-    [actionSheet addCancelButtonWithTitle:@"取消"];
-    [actionSheet showInView:self.view];
-}
-
 #pragma mark - UIScrollView Delegate
 static CGFloat beginPointY;
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
